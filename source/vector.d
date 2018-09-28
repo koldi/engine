@@ -54,6 +54,12 @@ public:
         _z = -_z;
     }
 
+    static float TripleScalarProduct(Vector u, Vector v, Vector w) {
+        return (u._x * (v._y * w._z - v._z * w._y)) +
+               (u._y * (-v._x * w._z + v._z * w._x)) +
+               (u._z * (v._x * w._y - v._y * w._x));
+    }
+
     Vector opBinary(string op)(auto ref const(Vector) rhs)
     if (op == "+" || op == "-") {
         mixin(`return Vector( 
@@ -225,6 +231,12 @@ unittest {
             auto v2 = v * 2.0f;
             v2.shouldEqual(expected);
         }),
+        it("with scalar is correct", delegate(){
+            auto v = Vector(1,2,3);
+            auto expected = Vector(2,4,6);
+            auto v2 = 2.0f * v;
+            v2.shouldEqual(expected);
+        }),
         it("with scalar *= operator", delegate(){
             auto v = Vector(1,2,3);
             auto expected = Vector(2,4,6);
@@ -275,6 +287,14 @@ unittest {
             auto v2 = Vector(2,4,6);
             auto expected = 28.0f;
             auto v3 = v * v2;
+            v3.shouldEqual(expected);
+        })
+    );
+    describe("vector#TripleScalarProduct ",
+        it(" correct", delegate(){
+            auto v = Vector(1,2,3);
+            auto expected = 0.0f;
+            auto v3 = Vector.TripleScalarProduct(v,v,v);
             v3.shouldEqual(expected);
         })
     );
