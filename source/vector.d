@@ -76,12 +76,33 @@ public:
         return this * (1.0f/scalar);
     }
 
+    ref Vector opOpAssign(string op : "/")(float scalar) {
+        return this *= (1.0f/scalar);
+    }
+
     Vector opBinary(string op : "*")(float scalar) {
         return Vector(_x * scalar, _y * scalar, _z * scalar);
     }
 
     Vector opBinaryRight(string op : "*")(float scalar) {
         return this * scalar;
+    }
+
+    ref Vector opOpAssign(string op : "*")(float scalar) {
+        _x *= scalar;
+        _y *= scalar;
+        _z *= scalar;
+        return this;
+    }
+
+    Vector opBinary(string op : "^")(auto ref const(Vector) rhs) {
+        return Vector(_y*rhs._z - _z*rhs._y,
+                      -_x*rhs._z + _z*rhs._x,
+                      _x*rhs._y - _y*rhs._x);
+    }
+
+    float opBinary(string op : "*")(auto ref const(Vector) rhs) {
+        return _x*rhs._x + _y*rhs._y + _z*rhs._z;
     }
 
     Vector opUnary(string op : "-")() {
@@ -195,6 +216,66 @@ unittest {
             auto expected = Vector(1,1,1);
             v1 -= v2;
             v1.shouldEqual(expected);
+        })
+    );
+    describe("vector#multiplication ",
+        it("with scalar is correct", delegate(){
+            auto v = Vector(1,2,3);
+            auto expected = Vector(2,4,6);
+            auto v2 = v * 2.0f;
+            v2.shouldEqual(expected);
+        }),
+        it("with scalar *= operator", delegate(){
+            auto v = Vector(1,2,3);
+            auto expected = Vector(2,4,6);
+            v *= 2.0f;
+            v.shouldEqual(expected);
+        })
+    );
+    describe("vector#division ",
+        it("with scalar is correct", delegate(){
+            auto v = Vector(2,4,6);
+            auto expected = Vector(1,2,3);
+            auto v2 = v / 2.0f;
+            v2.shouldEqual(expected);
+        }),
+        it("with scalar /= operator", delegate(){
+            auto v = Vector(2,4,6);
+            auto expected = Vector(1,2,3);
+            v /= 2.0f;
+            v.shouldEqual(expected);
+        })
+    );
+    describe("vector#cross product ",
+        it(" with other vector correct", delegate(){
+            auto v = Vector(1,2,3);
+            auto v2 = Vector(2,4,6);
+            auto expected = Vector(0,0,0);
+            auto v3 = v ^ v2;
+            v3.shouldEqual(expected);
+        }),
+        it(" not commutative", delegate(){
+            auto v = Vector(1,2,3);
+            auto v2 = Vector(4,3,12);
+            auto v3 = v ^ v2;
+            auto v4 = v2 ^ v;
+            v3.shouldNotEqual(v4);
+        }),
+        it(" equals the conjugate", delegate(){
+            auto v = Vector(1,2,3);
+            auto v2 = Vector(4,3,12);
+            auto v3 = v ^ v2;
+            auto v4 = v2 ^ v;
+            v3.shouldEqual(-v4);
+        })
+    );
+    describe("vector#dot product ",
+        it(" with other vector correct", delegate(){
+            auto v = Vector(1,2,3);
+            auto v2 = Vector(2,4,6);
+            auto expected = 28.0f;
+            auto v3 = v * v2;
+            v3.shouldEqual(expected);
         })
     );
 }
