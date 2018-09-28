@@ -102,7 +102,13 @@ unittest {
             v.GetX().shouldEqual(1.0f);
             v.GetY().shouldEqual(2.0f);
             v.GetZ().shouldEqual(3.0f);
-		})
+		}),
+        it(" for 2d vector - z should be 0", delegate(){
+            auto v = Vector(1,2);
+            v.GetX().shouldEqual(1.0f);
+            v.GetY().shouldEqual(2.0f);
+            v.GetZ().shouldEqual(0.0f);
+        })
 	);
     describe("vector#equals to",
         it("itself should equal", delegate(){
