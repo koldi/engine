@@ -1,0 +1,7 @@
+kinematics - motion of objects. linear and angular velocity and acceleration
+kinetics - forces and resulting motions
+newton's 1st low: A body tents to remain at rest or continue to move in a straight line at constant velocity unless acted upon by an external force. This is the so-called concept of inertia.
+newton's 2nd low: The acceleration of a body is a proportional to the resultant force acting on the body, and this acceleration is in the same direction as the resultant force. 
+					F = ma
+newton's 3rd low: For every force acting on a body (action) there is an equal and opposite reacting force (reaction), where the readction is collinear to the acting force. ? (two body??)
+
