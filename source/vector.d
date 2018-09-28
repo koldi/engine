@@ -6,17 +6,6 @@ protected:
     float _y = 0.0f;
     float _z = 0.0f;
 public:
-    float GetX() const {
-        return _x;
-    }
-
-    float GetY() const {
-        return _y;
-    }
-
-    float GetZ() const {
-        return _z;
-    }
     // 3d vector
     this(float x, float y, float z) {
         _x = x;
@@ -30,15 +19,15 @@ public:
         _z = 0.0;
     }
 
-    float Magnitude() {
+    float magnitude() {
         import std.math : sqrt;
         return sqrt(_x * _x + _y * _y + _z * _z);
     }
 
-    void Normalize() {
+    void normalize() {
         import std.math : fabs;
         const float tolerance = 0.0001;
-        auto v = Magnitude();
+        auto v = magnitude();
         if (v < tolerance) v = 1;
         _x /= v;
         if (fabs(_x) < tolerance) _x = 0;
@@ -48,19 +37,31 @@ public:
         if (fabs(_z) < tolerance) _z = 0;
     }
 
-    void Reverse() {
+    void reverse() {
         _x = -_x;
         _y = -_y;
         _z = -_z;
     }
 
-    static float TripleScalarProduct(Vector u, Vector v, Vector w) {
+    static float tripleScalarProduct(Vector u, Vector v, Vector w) {
         return (u._x * (v._y * w._z - v._z * w._y)) +
                (u._y * (-v._x * w._z + v._z * w._x)) +
                (u._z * (v._x * w._y - v._y * w._x));
     }
 
-    Vector opBinary(string op)(auto ref const(Vector) rhs)
+    float getX() const {
+        return _x;
+    }
+
+    float getY() const {
+        return _y;
+    }
+
+    float getZ() const {
+        return _z;
+    }
+
+    auto opBinary(string op)(auto ref const(Vector) rhs)
     if (op == "+" || op == "-") {
         mixin(`return Vector( 
             _x` ~ op ~ `rhs._x,
@@ -120,21 +121,21 @@ unittest {
     describe("vector#constructor",
 		it("default should initialize for zero vector", delegate() {
             Vector v;
-            v.GetX().shouldEqual(0.0f);
-            v.GetY().shouldEqual(0.0f);
-            v.GetZ().shouldEqual(0.0f);
+            v.getX().shouldEqual(0.0f);
+            v.getY().shouldEqual(0.0f);
+            v.getZ().shouldEqual(0.0f);
 		}),
         it("should initialize correctly", delegate() {
             Vector v = Vector(1,2,3);
-            v.GetX().shouldEqual(1.0f);
-            v.GetY().shouldEqual(2.0f);
-            v.GetZ().shouldEqual(3.0f);
+            v.getX().shouldEqual(1.0f);
+            v.getY().shouldEqual(2.0f);
+            v.getZ().shouldEqual(3.0f);
 		}),
         it(" for 2d vector - z should be 0", delegate(){
             auto v = Vector(1,2);
-            v.GetX().shouldEqual(1.0f);
-            v.GetY().shouldEqual(2.0f);
-            v.GetZ().shouldEqual(0.0f);
+            v.getX().shouldEqual(1.0f);
+            v.getY().shouldEqual(2.0f);
+            v.getZ().shouldEqual(0.0f);
         })
 	);
     describe("vector#equals to",
@@ -156,40 +157,40 @@ unittest {
     describe("vector#magnitude",
         it("should be zero for zero vector", delegate(){
             Vector v;
-            v.Magnitude().shouldEqual(0.0f);
+            v.magnitude().shouldEqual(0.0f);
         }),
         it("should be correct for non-zero vector", delegate(){
             Vector v = Vector(1,2,3);
-            v.Magnitude().shouldBeGreater(3.74f);
-            v.Magnitude().shouldBeLess(3.75f);
+            v.magnitude().shouldBeGreater(3.74f);
+            v.magnitude().shouldBeLess(3.75f);
         })
     );
     describe("vector#reverse",
         it("should be reversed itself", delegate(){
             Vector v = Vector(1,2,3);
             Vector reversed = Vector(-1,-2,-3);
-            v.Reverse();
+            v.reverse();
             v.shouldEqual(reversed);
         }),
         it("two times is the original", delegate(){
             Vector v = Vector(1,2,3);
             auto orig = v;
-            v.Reverse();
+            v.reverse();
             v.shouldNotEqual(orig);
-            v.Reverse();
+            v.reverse();
             v.shouldEqual(orig);
         })
     );
     describe("vector#normalize ",
         it("should be correct", delegate(){
             Vector v = Vector(1,2,3);
-            v.Normalize();
-            v.GetX().shouldBeGreater(0.26f);
-            v.GetX().shouldBeLess(0.27f);
-            v.GetY().shouldBeGreater(0.53f);
-            v.GetY().shouldBeLess(0.54f);
-            v.GetZ().shouldBeGreater(0.80f);
-            v.GetZ().shouldBeLess(0.81f);
+            v.normalize();
+            v.getX().shouldBeGreater(0.26f);
+            v.getX().shouldBeLess(0.27f);
+            v.getY().shouldBeGreater(0.53f);
+            v.getY().shouldBeLess(0.54f);
+            v.getZ().shouldBeGreater(0.80f);
+            v.getZ().shouldBeLess(0.81f);
         })
     );
     describe("vector#add ",
@@ -290,11 +291,11 @@ unittest {
             v3.shouldEqual(expected);
         })
     );
-    describe("vector#TripleScalarProduct ",
+    describe("vector#tripleScalarProduct ",
         it(" correct", delegate(){
             auto v = Vector(1,2,3);
             auto expected = 0.0f;
-            auto v3 = Vector.TripleScalarProduct(v,v,v);
+            auto v3 = Vector.tripleScalarProduct(v,v,v);
             v3.shouldEqual(expected);
         })
     );
